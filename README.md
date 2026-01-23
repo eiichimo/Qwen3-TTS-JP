@@ -1,14 +1,23 @@
 # Qwen3-TTS-JP
 
-Qwen3-TTS の日本語ローカライズ版フォークです。GUIの完全日本語化と、Whisperによる自動文字起こし機能を追加しています。
+**Windowsネイティブ対応** の Qwen3-TTS 日本語ローカライズ版フォークです。
+
+オリジナルのQwen3-TTSはLinux環境を前提として開発されており、FlashAttention 2の使用が推奨されていますが、FlashAttention 2はWindowsでは動作しません。本フォークでは、**WSL2やDockerを使わずにWindows上で直接動作**させるための対応と、GUIの完全日本語化、Whisperによる自動文字起こし機能を追加しています。
 
 <p align="center">
     <img src="assets/GUI.png" width="90%"/>
 </p>
 
-## 主な変更点
+## 特徴
 
-オリジナルの [QwenLM/Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) から以下の機能を追加・変更しています：
+### Windowsネイティブ対応
+
+- **FlashAttention 2不要**: `--no-flash-attn`オプションによりPyTorch標準のSDPA（Scaled Dot Product Attention）を使用
+- **WSL2/Docker不要**: Windows上で直接実行可能
+- **RTX 50シリーズ対応**: NVIDIA Blackwellアーキテクチャ（sm_120）用PyTorch nightlyビルドの導入手順を記載
+- **SoX依存の回避**: SoXがなくても動作（警告は表示されますが無視可能）
+
+### 日本語ローカライズ & 機能拡張
 
 - **GUIの完全日本語化**: ラベル、ボタン、プレースホルダー、エラーメッセージ、免責事項すべてを日本語化
 - **Whisper自動文字起こし機能**: ボイスクローン時の参照音声テキスト入力を自動化（[faster-whisper](https://github.com/SYSTRAN/faster-whisper) を使用）
@@ -21,8 +30,10 @@ Qwen3-TTS の日本語ローカライズ版フォークです。GUIの完全日�
 
 ## 動作環境
 
-- **OS**: Windows 10/11（ネイティブ環境対応）
-- **GPU**: NVIDIA GPU（CUDA対応、RTX 30シリーズ以降推奨）
+- **OS**: Windows 10/11（ネイティブ環境、WSL2不要）
+- **GPU**: NVIDIA GPU（CUDA対応）
+  - RTX 30/40シリーズ: PyTorch安定版で動作
+  - RTX 50シリーズ（Blackwell）: PyTorch nightlyビルド（cu128）が必要
 - **Python**: 3.10以上
 - **VRAM**: 8GB以上推奨（モデルサイズにより異なる）
 
@@ -85,10 +96,18 @@ qwen-tts-demo Qwen/Qwen3-TTS-12Hz-1.7B-Base --ip 127.0.0.1 --port 7860 --no-flas
 6. 「合成するテキスト」を入力
 7. 「音声生成」をクリック
 
-### Windowsでの注意事項
+### Windowsネイティブ対応のポイント
 
-- **FlashAttention2**: Windows環境では利用できないため、`--no-flash-attn` オプションを使用してください
-- **SoXの警告**: 「SoX could not be found」という警告が表示されますが、動作には影響ありません
+本フォークでは以下の対応により、Windowsネイティブ環境での動作を実現しています：
+
+| 問題 | オリジナル | 本フォークの対応 |
+|------|-----------|-----------------|
+| FlashAttention 2 | Linux専用、Windowsでビルド不可 | `--no-flash-attn`オプションでSDPA使用 |
+| SoX依存 | インストール必須の想定 | なくても動作（警告は無視可能） |
+| RTX 50シリーズ | 未対応 | PyTorch nightlyビルド手順を記載 |
+| 環境構築 | conda（Linux寄り） | venv（Windows標準） |
+
+**注意**: `--no-flash-attn`オプションは必須です。これがないとFlashAttention 2のインポートエラーで起動に失敗します。
 
 ## ライセンス
 
