@@ -1,0 +1,27 @@
+﻿Qwen3-TTS-JP
+Copyright 2026 hiroki-abe-58
+
+This product includes software developed by:
+
+- Qwen3-TTS (Copyright 2026 Alibaba Cloud)
+  Licensed under Apache License 2.0
+  https://github.com/QwenLM/Qwen3-TTS
+
+- faster-whisper (Copyright SYSTRAN)
+  Licensed under MIT License
+  https://github.com/SYSTRAN/faster-whisper
+
+- OpenAI Whisper (Copyright OpenAI)
+  Licensed under MIT License
+  https://github.com/openai/whisper
+
+================================================================================
+
+MODIFICATIONS FROM ORIGINAL QWEN3-TTS:
+
+1. qwen_tts/cli/demo.py
+   - Complete Japanese localization of GUI (labels, buttons, messages)
+   - Added Whisper-based automatic transcription for voice cloning
+   - Added Whisper model selection feature (tiny/base/small/medium/large-v3)
+
+These modifications are made in compliance with Apache License 2.0.
