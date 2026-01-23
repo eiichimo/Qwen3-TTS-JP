@@ -76,6 +76,8 @@ pip install --pre torch torchvision torchaudio --index-url https://download.pyto
 
 ### GUIの起動
 
+#### コマンドラインから起動
+
 ```bash
 # CustomVoiceモデル（プリセット話者）
 qwen-tts-demo Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice --ip 127.0.0.1 --port 7860 --no-flash-attn
@@ -85,6 +87,97 @@ qwen-tts-demo Qwen/Qwen3-TTS-12Hz-1.7B-Base --ip 127.0.0.1 --port 7860 --no-flas
 ```
 
 ブラウザで `http://127.0.0.1:7860` を開いてください。
+
+#### バッチファイルで簡単起動（推奨）
+
+以下のようなバッチファイルを作成すると、ダブルクリックで起動できます：
+
+**run-gui.bat**（CustomVoiceモデル用）:
+```batch
+@echo off
+chcp 65001 >nul
+title Qwen3-TTS GUI
+cd /d "%~dp0"
+.venv\Scripts\python.exe -m qwen_tts.cli.demo Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice --ip 127.0.0.1 --port 7860 --no-flash-attn
+pause
+```
+
+**run-voice-clone.bat**（Baseモデル/ボイスクローン用）:
+```batch
+@echo off
+chcp 65001 >nul
+title Qwen3-TTS Voice Clone
+cd /d "%~dp0"
+.venv\Scripts\python.exe -m qwen_tts.cli.demo Qwen/Qwen3-TTS-12Hz-1.7B-Base --ip 127.0.0.1 --port 7860 --no-flash-attn
+pause
+```
+
+#### 高機能ランチャー（ポート自動選択・ブラウザ自動起動）
+
+より便利な起動方法として、以下のPythonランチャーを使用できます：
+
+<details>
+<summary>launch_gui.py（クリックで展開）</summary>
+
+```python
+# coding=utf-8
+import socket
+import subprocess
+import sys
+import time
+import webbrowser
+import threading
+import urllib.request
+import urllib.error
+
+def find_free_port(start_port=7860, max_attempts=100):
+    """空いているポートを見つける"""
+    for port in range(start_port, start_port + max_attempts):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('127.0.0.1', port))
+                return port
+        except OSError:
+            continue
+    raise RuntimeError(f"ポート {start_port}-{start_port + max_attempts} は全て使用中です")
+
+def wait_for_server_and_open_browser(url, timeout=180):
+    """サーバー起動を待ってブラウザを開く"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            req = urllib.request.Request(url, method='HEAD')
+            urllib.request.urlopen(req, timeout=2)
+            webbrowser.open(url)
+            return True
+        except (urllib.error.URLError, ConnectionRefusedError, TimeoutError):
+            time.sleep(2)
+    return False
+
+def main():
+    port = find_free_port(7860)
+    url = f"http://127.0.0.1:{port}"
+    
+    threading.Thread(target=wait_for_server_and_open_browser, args=(url, 180), daemon=True).start()
+    
+    subprocess.run([
+        sys.executable, "-m", "qwen_tts.cli.demo",
+        "Qwen/Qwen3-TTS-12Hz-1.7B-Base",  # または CustomVoice
+        "--ip", "127.0.0.1",
+        "--port", str(port),
+        "--no-flash-attn"
+    ])
+
+if __name__ == "__main__":
+    main()
+```
+
+</details>
+
+機能:
+- **ポート自動選択**: 7860が使用中なら自動で空きポートを検出
+- **ブラウザ自動起動**: サーバー起動完了を検知して自動でブラウザを開く
+- **文字化け対策**: UTF-8エンコーディング対応
 
 ### ボイスクローンの手順
 
@@ -108,6 +201,129 @@ qwen-tts-demo Qwen/Qwen3-TTS-12Hz-1.7B-Base --ip 127.0.0.1 --port 7860 --no-flas
 | 環境構築 | conda（Linux寄り） | venv（Windows標準） |
 
 **注意**: `--no-flash-attn`オプションは必須です。これがないとFlashAttention 2のインポートエラーで起動に失敗します。
+
+## Windowsネイティブ環境構築の詳細
+
+### 解決した技術的課題
+
+本フォークの開発過程で、以下のWindows固有の問題を特定し解決しました：
+
+#### 1. RTX 50シリーズ（Blackwell/sm_120）のCUDA対応
+
+**問題**: PyTorch安定版はRTX 5090などの最新GPU（sm_120）をサポートしていない
+
+```
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+NVIDIA GeForce RTX 5090 with CUDA capability sm_120 is not compatible with the current PyTorch installation.
+```
+
+**解決策**: PyTorch nightly版（cu128）を使用
+
+```bash
+pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+```
+
+#### 2. FlashAttention 2のWindows非対応
+
+**問題**: FlashAttention 2はLinux専用でWindowsではビルド・実行不可
+
+```
+ImportError: FlashAttention2 has been toggled on, but it cannot be used due to the following error: 
+the package flash_attn seems to be not installed.
+```
+
+**解決策**: `--no-flash-attn`オプションでPyTorch標準のSDPA（Scaled Dot Product Attention）を使用
+
+| Attention実装 | 速度 | メモリ効率 | Windows対応 |
+|--------------|------|-----------|-------------|
+| flash_attention_2 | 最速 | 最高 | 非対応 |
+| sdpa (PyTorch native) | 高速 | 良好 | **対応** |
+| eager (標準) | 普通 | 普通 | 対応 |
+
+#### 3. SoX依存の回避
+
+**問題**: 一部の音声処理でSoXが必要だが、Windowsでは標準でインストールされていない
+
+```
+SoX could not be found!
+```
+
+**解決策**: Qwen3-TTSの基本機能はSoXなしで動作。警告は無視可能
+
+#### 4. コンソール文字化け（cp932エンコーディング）
+
+**問題**: Windows日本語環境ではcp932エンコーディングにより非ASCII文字が化ける
+
+```
+UnicodeEncodeError: 'cp932' codec can't encode character...
+```
+
+**解決策**: UTF-8エンコーディングを明示的に設定
+
+```python
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+```
+
+または、バッチファイルで `chcp 65001` を実行
+
+#### 5. torchao互換性警告
+
+**問題**: PyTorch nightlyとtorchaoのバージョン不整合による警告
+
+```
+Skipping import of cpp extensions due to incompatible torch version 2.11.0.dev+cu128 for torchao version 0.15.0
+```
+
+**解決策**: 警告のみで動作に影響なし。無視可能
+
+#### 6. Hugging Face symlink警告
+
+**問題**: Windowsではシンボリックリンク作成に管理者権限が必要
+
+```
+huggingface_hub cache-system uses symlinks by default...
+```
+
+**解決策**: 
+- Windows設定 → 開発者モードを有効化
+- または警告を無視（動作に影響なし）
+
+### 動作確認スクリプト
+
+環境が正しくセットアップされているか確認するには：
+
+```python
+import torch
+
+print(f"PyTorch version: {torch.__version__}")
+print(f"CUDA available: {torch.cuda.is_available()}")
+print(f"CUDA version: {torch.version.cuda}")
+print(f"GPU: {torch.cuda.get_device_name(0)}")
+print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+```
+
+期待される出力（RTX 5090の場合）：
+
+```
+PyTorch version: 2.11.0.dev20260123+cu128
+CUDA available: True
+CUDA version: 12.8
+GPU: NVIDIA GeForce RTX 5090
+GPU Memory: 31.8 GB
+```
+
+### トラブルシューティング
+
+| 症状 | 原因 | 解決策 |
+|------|------|--------|
+| `no kernel image is available` | PyTorch安定版を使用 | nightly版（cu128）をインストール |
+| `FlashAttention2 cannot be used` | FlashAttentionがWindows非対応 | `--no-flash-attn`オプションを追加 |
+| `SoX could not be found` | SoX未インストール | 無視可能（基本機能に影響なし） |
+| GPU認識されない | CUDAドライバ古い | 最新ドライバをインストール |
+| 文字化け | cp932エンコーディング | `chcp 65001`またはUTF-8設定 |
 
 ## ライセンス
 
