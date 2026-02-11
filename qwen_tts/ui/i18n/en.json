@@ -1,0 +1,273 @@
+{
+    "_meta": {
+        "display_name": "English",
+        "code": "en"
+    },
+    "app": {
+        "title": "Qwen3-TTS-WinBlackwell",
+        "subtitle": "Text-to-Speech Demo",
+        "model_label": "Model",
+        "type_label": "Type"
+    },
+    "language_selector": {
+        "label": "Language"
+    },
+    "tabs": {
+        "custom_voice": "Custom Voice",
+        "voice_design": "Voice Design",
+        "voice_clone": "Voice Clone",
+        "settings": "Settings"
+    },
+    "custom_voice": {
+        "title": "Custom Voice",
+        "description": "Generate speech with preset speakers. You can also specify emotions and instructions.",
+        "text_input": {
+            "label": "Text to Synthesize",
+            "placeholder": "Enter text to synthesize"
+        },
+        "speaker_selector": {
+            "label": "Speaker",
+            "info": "Select a preset speaker"
+        },
+        "language_selector": {
+            "label": "Language",
+            "info": "Select synthesis language"
+        },
+        "emotion_selector": {
+            "label": "Emotion",
+            "info": "Specify voice emotion (optional)"
+        },
+        "speed_slider": {
+            "label": "Speed"
+        },
+        "instruction_input": {
+            "label": "Additional Instruction (Optional)",
+            "placeholder": "e.g., Speak in a whisper, Speak slowly"
+        },
+        "generate_button": "Generate Speech",
+        "audio_output": "Output Audio",
+        "status": "Status",
+        "samples": {
+            "title": "Sample Texts"
+        }
+    },
+    "voice_design": {
+        "title": "Voice Design",
+        "description": "Describe voice characteristics in text to generate matching speech. Voice descriptions should be written in English.",
+        "text_input": {
+            "label": "Text to Synthesize",
+            "placeholder": "Enter text to synthesize"
+        },
+        "voice_description": {
+            "label": "Voice Design Instruction",
+            "placeholder": "Describe the voice characteristics in English",
+            "info": "Describe the voice characteristics in English"
+        },
+        "language_selector": {
+            "label": "Language"
+        },
+        "speed_slider": {
+            "label": "Speed"
+        },
+        "generate_button": "Generate Speech",
+        "audio_output": "Output Audio",
+        "status": "Status",
+        "presets": {
+            "title": "Voice Presets",
+            "calm_male": {
+                "name": "Calm Middle-aged Male",
+                "description": "A calm, composed middle-aged male voice with a warm, resonant tone and measured pacing."
+            },
+            "energetic_female": {
+                "name": "Energetic Young Female",
+                "description": "An energetic, bright young female voice with lively intonation and enthusiastic delivery."
+            },
+            "professional_narrator": {
+                "name": "Professional Narrator",
+                "description": "A professional, clear narrator voice with perfect diction and authoritative presence."
+            },
+            "gentle_grandmother": {
+                "name": "Gentle Grandmother",
+                "description": "A gentle, warm elderly female voice with soft tones and a nurturing quality."
+            },
+            "powerful_announcer": {
+                "name": "Powerful Announcer",
+                "description": "A powerful, commanding announcer voice with strong projection and dramatic flair."
+            },
+            "cute_girl": {
+                "name": "Cute Young Girl",
+                "description": "A cute, sweet young girl voice with high pitch, playful tone and innocent charm."
+            }
+        }
+    },
+    "voice_clone": {
+        "title": "Voice Clone",
+        "description": "Clone a voice from reference audio and synthesize new text with it.",
+        "notice": "Note: Voice Clone requires the Base model (~3.8GB), which is downloaded automatically on first use.",
+        "reference_audio": {
+            "label": "Reference Audio (voice to clone)"
+        },
+        "reference_text": {
+            "label": "Reference Audio Text (transcript)",
+            "placeholder": "Required when x-vector only mode is OFF"
+        },
+        "whisper": {
+            "model_label": "Whisper Model",
+            "transcribe_button": "Auto Transcribe",
+            "language_label": "Transcription Language"
+        },
+        "xvector_only": {
+            "label": "x-vector Only Mode (no text required, but lower quality)"
+        },
+        "text_input": {
+            "label": "Text to Synthesize",
+            "placeholder": "Enter text to synthesize"
+        },
+        "language_selector": {
+            "label": "Language"
+        },
+        "speed_slider": {
+            "label": "Speed"
+        },
+        "generate_button": "Generate Speech",
+        "audio_output": "Output Audio",
+        "status": "Status",
+        "tips": {
+            "title": "Tips",
+            "items": [
+                "Reference audio should be at least 3 seconds of clear audio with minimal noise",
+                "More accurate reference text leads to better cloning quality",
+                "x-vector only mode doesn't require text input but produces lower quality",
+                "Cross-language cloning is possible, but same-language yields the best quality"
+            ]
+        },
+        "prompt_save_load": {
+            "tab_title": "Save / Load Voice Prompt",
+            "save_title": "Save Voice Prompt",
+            "save_description": "Upload reference audio and text to save as a reusable voice prompt file.",
+            "reference_audio_label": "Reference Audio",
+            "reference_text_label": "Reference Audio Text",
+            "save_button": "Save Voice Prompt File",
+            "prompt_file_output": "Voice Prompt File",
+            "load_title": "Load & Generate",
+            "load_description": "Load a saved voice prompt file and synthesize new text with it.",
+            "prompt_file_input": "Upload Voice Prompt File"
+        }
+    },
+    "settings": {
+        "gpu_info": {
+            "title": "GPU Information",
+            "gpu_name": "GPU",
+            "vram_total": "VRAM Total",
+            "cuda_version": "CUDA Version",
+            "compute_capability": "Compute Capability",
+            "driver_version": "Driver Version",
+            "no_gpu": "No CUDA-compatible GPU detected"
+        },
+        "vram": {
+            "title": "VRAM Monitoring",
+            "allocated": "Allocated",
+            "reserved": "Reserved",
+            "total": "Total",
+            "free": "Free",
+            "refresh_button": "Refresh",
+            "clear_cache_button": "Clear Cache",
+            "cache_cleared": "CUDA cache cleared"
+        },
+        "flash_attn": {
+            "title": "Attention Implementation",
+            "current": "Current Implementation",
+            "flash_attention_2": "FlashAttention 2 (Fastest, Linux only)",
+            "sdpa": "SDPA (Fast, Windows compatible)",
+            "eager": "Eager (Standard)",
+            "note_windows": "Note: FlashAttention 2 is not available on Windows. Use --no-flash-attn option to use SDPA instead."
+        },
+        "model_info": {
+            "title": "Model Information",
+            "name": "Model Name",
+            "type": "Type",
+            "dtype": "Data Type",
+            "parameters": "Parameters"
+        },
+        "system_info": {
+            "title": "System Information",
+            "os": "OS",
+            "python": "Python",
+            "pytorch": "PyTorch",
+            "cuda": "CUDA",
+            "cudnn": "cuDNN",
+            "whisper_status": "Whisper Model",
+            "refresh_button": "Refresh",
+            "not_loaded": "Not loaded"
+        },
+        "technical_info": {
+            "title": "Technical Notes (Windows)",
+            "content": "### Windows-Specific Notes\n\n- **FlashAttention 2**: Not available on Windows. Use `--no-flash-attn` option for SDPA\n- **SoX**: Not required (warnings can be ignored)\n- **Encoding**: Use `chcp 65001` or UTF-8 settings for proper display\n- **Symlinks**: Enable Developer Mode or ignore warnings\n\n### RTX 50 Series (Blackwell)\n\n- PyTorch stable does not support sm_120; nightly build (cu128) is required\n- `pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128`\n- torchao version mismatch warnings can be safely ignored"
+        }
+    },
+    "speakers": {
+        "Chelsie": {"local_name": "Chelsie", "description": "Bright and friendly female voice"},
+        "Ethan": {"local_name": "Ethan", "description": "Calm male voice"},
+        "Aiden": {"local_name": "Aiden", "description": "Youthful male voice"},
+        "Bella": {"local_name": "Bella", "description": "Soft and warm female voice"},
+        "Vivian": {"local_name": "Vivian", "description": "Clear and intelligent female voice"},
+        "Lucas": {"local_name": "Lucas", "description": "Strong and steady male voice"},
+        "Eleanor": {"local_name": "Eleanor", "description": "Elegant and intellectual female voice"},
+        "Alexander": {"local_name": "Alexander", "description": "Dignified male voice"},
+        "Serena": {"local_name": "Serena", "description": "Soothing and gentle female voice"}
+    },
+    "languages": {
+        "Auto": "Auto Detect",
+        "Japanese": "Japanese",
+        "English": "English",
+        "Chinese": "Chinese",
+        "Korean": "Korean",
+        "French": "French",
+        "German": "German",
+        "Spanish": "Spanish",
+        "Italian": "Italian",
+        "Portuguese": "Portuguese",
+        "Russian": "Russian"
+    },
+    "emotions": {
+        "neutral": "Neutral",
+        "happy": "Happy",
+        "sad": "Sad",
+        "angry": "Angry",
+        "surprised": "Surprised",
+        "fearful": "Fearful",
+        "disgusted": "Disgusted",
+        "calm": "Calm",
+        "excited": "Excited",
+        "tender": "Tender"
+    },
+    "messages": {
+        "generating": "Generating speech...",
+        "generated": "Done",
+        "generated_detail": "Generated ({elapsed:.1f}s)",
+        "error": "Error",
+        "enter_text": "Please enter text",
+        "select_speaker": "Please select a speaker",
+        "enter_voice_description": "Please enter a voice design instruction",
+        "upload_reference_audio": "Please upload reference audio",
+        "enter_synthesis_text": "Please enter text to synthesize",
+        "reference_text_required": "Reference text is required when x-vector only mode is OFF.\nIf text is unknown, enable x-vector only mode (quality will be reduced).",
+        "transcription_complete": "Transcription complete ({model}): {chars} chars",
+        "no_speech_detected": "(No speech detected)",
+        "whisper_unavailable": "Whisper model is not available. Please install faster-whisper.",
+        "audio_data_missing": "No audio data provided",
+        "audio_format_invalid": "Invalid audio data format (type: {dtype})",
+        "transcription_failed": "Transcription failed - {error}",
+        "upload_prompt_file": "Please upload a voice prompt file",
+        "invalid_file_format": "Invalid file format",
+        "empty_prompt_data": "Voice prompt data is empty",
+        "invalid_internal_format": "Invalid internal file format",
+        "missing_speaker_vector": "Speaker embedding is missing",
+        "prompt_load_failed": "Failed to load or use voice prompt file.\nPlease check the file format and contents.\n{error}",
+        "prompt_saved": "Voice prompt file saved"
+    },
+    "disclaimer": {
+        "title": "Disclaimer",
+        "text": "**Disclaimer**\n- This audio is automatically generated/synthesized by an AI model and is provided for demonstration purposes only. It may contain inaccurate or inappropriate content and does not represent the views of the developer.\n- Users assume all risks and responsibilities regarding the use and distribution of generated audio.\n- Intentional generation of illegal, harmful, defamatory, fraudulent, deepfake, or privacy/copyright-infringing content is prohibited."
+    }
+}

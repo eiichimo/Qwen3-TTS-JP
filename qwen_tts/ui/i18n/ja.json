@@ -1,0 +1,273 @@
+{
+    "_meta": {
+        "display_name": "日本語",
+        "code": "ja"
+    },
+    "app": {
+        "title": "Qwen3-TTS-WinBlackwell",
+        "subtitle": "テキスト音声合成デモ",
+        "model_label": "モデル",
+        "type_label": "タイプ"
+    },
+    "language_selector": {
+        "label": "表示言語"
+    },
+    "tabs": {
+        "custom_voice": "カスタムボイス",
+        "voice_design": "ボイスデザイン",
+        "voice_clone": "ボイスクローン",
+        "settings": "設定"
+    },
+    "custom_voice": {
+        "title": "カスタムボイス",
+        "description": "プリセット話者による音声合成。感情指定や指示も可能です。",
+        "text_input": {
+            "label": "合成するテキスト",
+            "placeholder": "合成するテキストを入力してください"
+        },
+        "speaker_selector": {
+            "label": "話者",
+            "info": "プリセット話者を選択"
+        },
+        "language_selector": {
+            "label": "言語",
+            "info": "合成言語を選択"
+        },
+        "emotion_selector": {
+            "label": "感情",
+            "info": "音声の感情を指定（オプション）"
+        },
+        "speed_slider": {
+            "label": "速度"
+        },
+        "instruction_input": {
+            "label": "追加指示（オプション）",
+            "placeholder": "例: ささやくように話して、ゆっくりと話して"
+        },
+        "generate_button": "音声生成",
+        "audio_output": "出力音声",
+        "status": "ステータス",
+        "samples": {
+            "title": "サンプルテキスト"
+        }
+    },
+    "voice_design": {
+        "title": "ボイスデザイン",
+        "description": "テキストで声の特徴を記述し、その声で音声を合成します。音声特徴の記述は英語で入力してください。",
+        "text_input": {
+            "label": "合成するテキスト",
+            "placeholder": "合成するテキストを入力してください"
+        },
+        "voice_description": {
+            "label": "音声デザイン指示",
+            "placeholder": "声の特徴を英語で記述してください",
+            "info": "英語でボイスの特徴を説明します"
+        },
+        "language_selector": {
+            "label": "言語"
+        },
+        "speed_slider": {
+            "label": "速度"
+        },
+        "generate_button": "音声生成",
+        "audio_output": "出力音声",
+        "status": "ステータス",
+        "presets": {
+            "title": "プリセットボイス",
+            "calm_male": {
+                "name": "落ち着いた中年男性",
+                "description": "A calm, composed middle-aged male voice with a warm, resonant tone and measured pacing."
+            },
+            "energetic_female": {
+                "name": "活発な若い女性",
+                "description": "An energetic, bright young female voice with lively intonation and enthusiastic delivery."
+            },
+            "professional_narrator": {
+                "name": "プロのナレーター",
+                "description": "A professional, clear narrator voice with perfect diction and authoritative presence."
+            },
+            "gentle_grandmother": {
+                "name": "優しいおばあさん",
+                "description": "A gentle, warm elderly female voice with soft tones and a nurturing quality."
+            },
+            "powerful_announcer": {
+                "name": "力強いアナウンサー",
+                "description": "A powerful, commanding announcer voice with strong projection and dramatic flair."
+            },
+            "cute_girl": {
+                "name": "かわいい女の子",
+                "description": "A cute, sweet young girl voice with high pitch, playful tone and innocent charm."
+            }
+        }
+    },
+    "voice_clone": {
+        "title": "ボイスクローン",
+        "description": "参照音声からボイスをクローンして、新しいテキストを合成します。",
+        "notice": "※ ボイスクローンにはBaseモデル（約3.8GB）が必要です。初回使用時に自動ダウンロードされます。",
+        "reference_audio": {
+            "label": "参照音声（クローン元の音声）"
+        },
+        "reference_text": {
+            "label": "参照音声のテキスト（書き起こし）",
+            "placeholder": "x-vectorのみモードOFF時は必須"
+        },
+        "whisper": {
+            "model_label": "Whisperモデル",
+            "transcribe_button": "自動文字起こし",
+            "language_label": "文字起こし言語"
+        },
+        "xvector_only": {
+            "label": "x-vectorのみモード（テキスト不要だが品質低下）"
+        },
+        "text_input": {
+            "label": "合成するテキスト",
+            "placeholder": "合成するテキストを入力してください"
+        },
+        "language_selector": {
+            "label": "言語"
+        },
+        "speed_slider": {
+            "label": "速度"
+        },
+        "generate_button": "音声生成",
+        "audio_output": "出力音声",
+        "status": "ステータス",
+        "tips": {
+            "title": "ヒント",
+            "items": [
+                "参照音声は3秒以上、ノイズの少ないクリアな音声が推奨です",
+                "参照テキストが正確であるほど、クローン品質が向上します",
+                "x-vectorのみモードはテキスト入力不要ですが、品質は低下します",
+                "異なる言語間でのクローンも可能ですが、同一言語が最も高品質です"
+            ]
+        },
+        "prompt_save_load": {
+            "tab_title": "音色の保存/読み込み",
+            "save_title": "音色を保存",
+            "save_description": "参照音声とテキストをアップロードし、再利用可能な音色ファイルとして保存します。",
+            "reference_audio_label": "参照音声",
+            "reference_text_label": "参照音声のテキスト",
+            "save_button": "音色ファイルを保存",
+            "prompt_file_output": "音色ファイル",
+            "load_title": "音色を読み込んで合成",
+            "load_description": "保存した音色ファイルを読み込んで、新しいテキストを合成します。",
+            "prompt_file_input": "音色ファイルをアップロード"
+        }
+    },
+    "settings": {
+        "gpu_info": {
+            "title": "GPU情報",
+            "gpu_name": "GPU",
+            "vram_total": "VRAM容量",
+            "cuda_version": "CUDAバージョン",
+            "compute_capability": "Compute Capability",
+            "driver_version": "ドライバーバージョン",
+            "no_gpu": "CUDA対応GPUが検出されませんでした"
+        },
+        "vram": {
+            "title": "VRAMモニタリング",
+            "allocated": "使用中",
+            "reserved": "予約済み",
+            "total": "合計",
+            "free": "空き",
+            "refresh_button": "更新",
+            "clear_cache_button": "キャッシュクリア",
+            "cache_cleared": "CUDAキャッシュをクリアしました"
+        },
+        "flash_attn": {
+            "title": "Attention実装",
+            "current": "現在の実装",
+            "flash_attention_2": "FlashAttention 2（最速・Linux専用）",
+            "sdpa": "SDPA（高速・Windows対応）",
+            "eager": "Eager（標準）",
+            "note_windows": "※ WindowsではFlashAttention 2は利用できません。--no-flash-attnオプションでSDPAを使用します。"
+        },
+        "model_info": {
+            "title": "モデル情報",
+            "name": "モデル名",
+            "type": "タイプ",
+            "dtype": "データ型",
+            "parameters": "パラメータ数"
+        },
+        "system_info": {
+            "title": "システム情報",
+            "os": "OS",
+            "python": "Python",
+            "pytorch": "PyTorch",
+            "cuda": "CUDA",
+            "cudnn": "cuDNN",
+            "whisper_status": "Whisperモデル",
+            "refresh_button": "更新",
+            "not_loaded": "未ロード"
+        },
+        "technical_info": {
+            "title": "技術情報（Windows固有）",
+            "content": "### Windows固有の注意事項\n\n- **FlashAttention 2**: Windowsでは利用不可。`--no-flash-attn`オプションでSDPAを使用\n- **SoX**: インストール不要（警告は無視可能）\n- **文字化け**: `chcp 65001`またはUTF-8設定で対応\n- **シンボリックリンク**: 開発者モードを有効化するか、警告を無視\n\n### RTX 50シリーズ（Blackwell）\n\n- PyTorch安定版はsm_120未対応のため、nightly版（cu128）が必要\n- `pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128`\n- torchaoバージョン不整合の警告は無視可能"
+        }
+    },
+    "speakers": {
+        "Chelsie": {"local_name": "チェルシー", "description": "明るく親しみやすい女性の声"},
+        "Ethan": {"local_name": "イーサン", "description": "落ち着いた男性の声"},
+        "Aiden": {"local_name": "エイデン", "description": "若々しい男性の声"},
+        "Bella": {"local_name": "ベラ", "description": "柔らかく温かみのある女性の声"},
+        "Vivian": {"local_name": "ヴィヴィアン", "description": "クリアで聡明な女性の声"},
+        "Lucas": {"local_name": "ルーカス", "description": "力強く安定感のある男性の声"},
+        "Eleanor": {"local_name": "エレノア", "description": "上品で知的な女性の声"},
+        "Alexander": {"local_name": "アレクサンダー", "description": "威厳のある男性の声"},
+        "Serena": {"local_name": "セレナ", "description": "穏やかで癒し系の女性の声"}
+    },
+    "languages": {
+        "Auto": "自動検出",
+        "Japanese": "日本語",
+        "English": "英語",
+        "Chinese": "中国語",
+        "Korean": "韓国語",
+        "French": "フランス語",
+        "German": "ドイツ語",
+        "Spanish": "スペイン語",
+        "Italian": "イタリア語",
+        "Portuguese": "ポルトガル語",
+        "Russian": "ロシア語"
+    },
+    "emotions": {
+        "neutral": "ニュートラル",
+        "happy": "嬉しい",
+        "sad": "悲しい",
+        "angry": "怒り",
+        "surprised": "驚き",
+        "fearful": "恐怖",
+        "disgusted": "嫌悪",
+        "calm": "穏やか",
+        "excited": "興奮",
+        "tender": "優しい"
+    },
+    "messages": {
+        "generating": "音声を生成中...",
+        "generated": "完了しました",
+        "generated_detail": "生成完了 ({elapsed:.1f}秒)",
+        "error": "エラー",
+        "enter_text": "テキストを入力してください",
+        "select_speaker": "話者を選択してください",
+        "enter_voice_description": "音声デザイン指示を入力してください",
+        "upload_reference_audio": "参照音声をアップロードしてください",
+        "enter_synthesis_text": "合成するテキストを入力してください",
+        "reference_text_required": "x-vectorのみモードがOFFの場合、参照音声のテキストが必要です。\nテキストが不明な場合は「x-vectorのみモード」をONにしてください（品質は低下します）",
+        "transcription_complete": "文字起こし完了（{model}）: {chars}文字",
+        "no_speech_detected": "（音声が検出されませんでした）",
+        "whisper_unavailable": "Whisperモデルが利用できません。faster-whisperをインストールしてください。",
+        "audio_data_missing": "音声データがありません",
+        "audio_format_invalid": "音声データの形式が不正です (type: {dtype})",
+        "transcription_failed": "文字起こしに失敗しました - {error}",
+        "upload_prompt_file": "音色ファイルをアップロードしてください",
+        "invalid_file_format": "ファイル形式が正しくありません",
+        "empty_prompt_data": "音色データが空です",
+        "invalid_internal_format": "ファイル内部の形式が正しくありません",
+        "missing_speaker_vector": "話者ベクトルがありません",
+        "prompt_load_failed": "音色ファイルの読み込みまたは使用に失敗しました。\nファイル形式や内容を確認してください。\n{error}",
+        "prompt_saved": "音色ファイルを保存しました"
+    },
+    "disclaimer": {
+        "title": "免責事項",
+        "text": "**免責事項**\n- この音声はAIモデルによって自動生成/合成されたものであり、デモンストレーション目的でのみ提供されています。不正確または不適切な内容が含まれる場合があります。開発者の見解を代表するものではありません。\n- ユーザーは、この音声の使用、配布に関するすべてのリスクと責任を自ら負うものとします。\n- 違法、有害、名誉毀損、詐欺、ディープフェイク、プライバシー/肖像権/著作権を侵害するコンテンツの生成は禁止されています。"
+    }
+}
