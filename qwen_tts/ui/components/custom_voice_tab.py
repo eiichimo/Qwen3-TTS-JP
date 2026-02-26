@@ -80,6 +80,7 @@ def create_custom_voice_tab(
                 lines=5,
                 max_lines=10,
                 placeholder=t("custom_voice.text_input.placeholder"),
+                interactive=True,
             )
             with gr.Row():
                 spk_in = gr.Dropdown(
@@ -110,11 +111,13 @@ def create_custom_voice_tab(
                     maximum=2.0,
                     value=1.0,
                     step=0.1,
+                    interactive=True,
                 )
             instruct_in = gr.Textbox(
                 label=t("custom_voice.instruction_input.label"),
                 lines=2,
                 placeholder=t("custom_voice.instruction_input.placeholder"),
+                interactive=True,
             )
             btn = gr.Button(
                 t("custom_voice.generate_button"),

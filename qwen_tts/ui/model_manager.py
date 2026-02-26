@@ -10,9 +10,11 @@ Model type mapping:
   base         -> *-Base
 """
 
+import json
+import os
 import re
 import threading
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 
@@ -148,7 +150,11 @@ class ModelManager:
         return []
 
     def get_all_supported_speakers(self) -> list:
-        """Get supported speakers from the custom_voice model (if loaded or primary)."""
+        """Get supported speakers from the custom_voice model (if loaded or primary).
+
+        Falls back to reading config.json directly if the CustomVoice model
+        is not yet loaded, avoiding a full model load just for the speaker list.
+        """
         for kind in ("custom_voice", self._primary_kind):
             if kind in self._models:
                 tts = self._models[kind][0]
@@ -156,4 +162,46 @@ class ModelManager:
                     result = tts.model.get_supported_speakers()
                     if result:
                         return list(result)
+
+        speakers = self._read_speakers_from_config()
+        if speakers:
+            return speakers
         return []
+
+    def _read_speakers_from_config(self) -> List[str]:
+        """Read speaker list from CustomVoice config.json without loading the model."""
+        ckpt = self.ckpt_for_kind("custom_voice")
+        candidates = self._resolve_config_paths(ckpt)
+        for path in candidates:
+            if os.path.isfile(path):
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        cfg = json.load(f)
+                    spk_id = cfg.get("talker_config", {}).get("spk_id", {})
+                    if spk_id:
+                        return list(spk_id.keys())
+                except (json.JSONDecodeError, OSError):
+                    continue
+        return []
+
+    @staticmethod
+    def _resolve_config_paths(ckpt: str) -> List[str]:
+        """Return candidate file paths for a checkpoint's config.json."""
+        paths = []
+        if os.path.isdir(ckpt):
+            paths.append(os.path.join(ckpt, "config.json"))
+
+        try:
+            from huggingface_hub import try_to_load_from_cache
+            cached = try_to_load_from_cache(ckpt, "config.json")
+            if cached and isinstance(cached, str):
+                paths.append(cached)
+        except Exception:
+            pass
+
+        script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        local_model_dir = os.path.join(script_dir, "models", os.path.basename(ckpt))
+        if os.path.isdir(local_model_dir):
+            paths.append(os.path.join(local_model_dir, "config.json"))
+
+        return paths

@@ -4,11 +4,10 @@ Main Gradio application builder for Qwen3-TTS UI.
 Provides the build_demo() function called from qwen_tts.cli.demo.
 
 Architecture:
-  - Language selector is placed OUTSIDE @gr.render so it persists.
-  - All translatable UI content is inside @gr.render, which re-builds
-    the component tree whenever the language dropdown changes.
-  - Tab selection state is tracked via a mutable dict so that the
-    previously selected tab is restored after a language switch.
+  - UI is built STATICALLY (no @gr.render) for Gradio 6.x compatibility.
+  - Language is loaded from persisted preference at startup.
+  - Changing the language dropdown saves the preference and triggers a
+    page reload via JavaScript so the UI is rebuilt in the new language.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
@@ -16,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import gradio as gr
 
 from .css import CUSTOM_CSS, UPLOAD_FIX_JS
-from .i18n_utils import get_available_languages, set_language, t
+from .i18n_utils import get_available_languages, get_current_language, set_language, save_language_pref, t
 from .model_manager import ModelManager
 from .components import (
     create_custom_voice_tab,
@@ -24,9 +23,6 @@ from .components import (
     create_voice_clone_tab,
     create_settings_tab,
 )
-
-# Stable tab IDs (do NOT change -- used to preserve selection across re-renders)
-_TAB_IDS = ["tab-cv", "tab-vd", "tab-vc", "tab-settings"]
 
 
 def _title_case_display(s: str) -> str:
@@ -57,12 +53,11 @@ def build_demo(
     gen_kwargs_default: Dict[str, Any],
     attn_impl: Optional[str] = None,
 ) -> gr.Blocks:
-    """Build the Gradio Blocks demo with i18n + tab-state preservation."""
+    """Build the Gradio Blocks demo with static UI and reload-based i18n."""
     import traceback as _tb
 
     model_kind = _detect_model_kind(ckpt, tts)
 
-    # ---- Model manager ----
     load_kwargs: Dict[str, Any] = {}
     if hasattr(tts.model, "device"):
         load_kwargs["device_map"] = str(tts.model.device)
@@ -77,7 +72,6 @@ def build_demo(
         load_kwargs=load_kwargs,
     )
 
-    # ---- Model langs / speakers ----
     lang_choices_disp, lang_map = _build_choices_and_map(
         list(manager.get_all_supported_langs() or [])
     )
@@ -88,20 +82,16 @@ def build_demo(
     def _gen_common_kwargs() -> Dict[str, Any]:
         return dict(gen_kwargs_default)
 
-    # ---- UI language selector data ----
     available_langs = get_available_languages()
     lang_display_choices = [d for d, _ in available_langs]
     lang_display_to_code = {d: c for d, c in available_langs}
 
+    current_lang_code = get_current_language()
     default_ui_lang_display = next(
-        (d for d, c in available_langs if c == "ja"),
+        (d for d, c in available_langs if c == current_lang_code),
         lang_display_choices[0] if lang_display_choices else "ja",
     )
 
-    # ---- Mutable tab-state (survives @gr.render cycles) ----
-    _tab_state: Dict[str, str] = {"selected": _TAB_IDS[0]}
-
-    # ---- Theme ----
     theme = gr.themes.Soft(
         primary_hue="blue",
         secondary_hue="slate",
@@ -114,11 +104,9 @@ def build_demo(
     if _gradio_major < 6:
         _blocks_kwargs = {"theme": theme, "css": CUSTOM_CSS, "js": UPLOAD_FIX_JS}
 
-    # ==================================================================
     with gr.Blocks(title="Qwen3-TTS-WinBlackwell", **_blocks_kwargs) as demo:
         demo._launch_extras = _launch_extras
 
-        # ---- Header (persists across re-renders) ----
         with gr.Row(elem_classes=["app-header"]):
             with gr.Column(scale=3, min_width=300):
                 gr.Markdown(
@@ -135,72 +123,69 @@ def build_demo(
                     elem_classes=["lang-selector"],
                 )
 
-        # ---- Dynamic content ----
-        @gr.render(inputs=[ui_lang_selector])
-        def render_main(ui_lang_display: str):
+        with gr.Tabs() as tabs:
+            with gr.Tab(t("tabs.custom_voice"), id="tab-cv"):
+                try:
+                    create_custom_voice_tab(
+                        manager=manager,
+                        lang_choices_disp=lang_choices_disp,
+                        lang_map=lang_map,
+                        spk_choices_disp=spk_choices_disp,
+                        spk_map=spk_map,
+                        gen_kwargs_fn=_gen_common_kwargs,
+                    )
+                except Exception:
+                    _tb.print_exc()
+                    gr.Markdown(f"**Error:** {_tb.format_exc()}")
+
+            with gr.Tab(t("tabs.voice_design"), id="tab-vd"):
+                try:
+                    create_voice_design_tab(
+                        manager=manager,
+                        lang_choices_disp=lang_choices_disp,
+                        lang_map=lang_map,
+                        gen_kwargs_fn=_gen_common_kwargs,
+                    )
+                except Exception:
+                    _tb.print_exc()
+                    gr.Markdown(f"**Error:** {_tb.format_exc()}")
+
+            with gr.Tab(t("tabs.voice_clone"), id="tab-vc"):
+                try:
+                    create_voice_clone_tab(
+                        manager=manager,
+                        lang_choices_disp=lang_choices_disp,
+                        lang_map=lang_map,
+                        gen_kwargs_fn=_gen_common_kwargs,
+                    )
+                except Exception:
+                    _tb.print_exc()
+                    gr.Markdown(f"**Error:** {_tb.format_exc()}")
+
+            with gr.Tab(t("tabs.settings"), id="tab-settings"):
+                try:
+                    create_settings_tab(
+                        manager=manager,
+                        ckpt=ckpt,
+                        model_kind=model_kind,
+                        attn_impl=attn_impl,
+                    )
+                except Exception:
+                    _tb.print_exc()
+                    gr.Markdown(f"**Error:** {_tb.format_exc()}")
+
+        gr.Markdown(t("disclaimer.text"), elem_classes=["disclaimer"])
+
+        def _on_lang_change(ui_lang_display: str):
             lang_code = lang_display_to_code.get(ui_lang_display, "ja")
+            save_language_pref(lang_code)
             set_language(lang_code)
 
-            # Tabs -- selected= restores previously active tab
-            with gr.Tabs(selected=_tab_state["selected"]) as tabs:
-                with gr.Tab(t("tabs.custom_voice"), id=_TAB_IDS[0]):
-                    try:
-                        create_custom_voice_tab(
-                            manager=manager,
-                            lang_choices_disp=lang_choices_disp,
-                            lang_map=lang_map,
-                            spk_choices_disp=spk_choices_disp,
-                            spk_map=spk_map,
-                            gen_kwargs_fn=_gen_common_kwargs,
-                        )
-                    except Exception:
-                        _tb.print_exc()
-                        gr.Markdown(f"**Error:** {_tb.format_exc()}")
-
-                with gr.Tab(t("tabs.voice_design"), id=_TAB_IDS[1]):
-                    try:
-                        create_voice_design_tab(
-                            manager=manager,
-                            lang_choices_disp=lang_choices_disp,
-                            lang_map=lang_map,
-                            gen_kwargs_fn=_gen_common_kwargs,
-                        )
-                    except Exception:
-                        _tb.print_exc()
-                        gr.Markdown(f"**Error:** {_tb.format_exc()}")
-
-                with gr.Tab(t("tabs.voice_clone"), id=_TAB_IDS[2]):
-                    try:
-                        create_voice_clone_tab(
-                            manager=manager,
-                            lang_choices_disp=lang_choices_disp,
-                            lang_map=lang_map,
-                            gen_kwargs_fn=_gen_common_kwargs,
-                        )
-                    except Exception:
-                        _tb.print_exc()
-                        gr.Markdown(f"**Error:** {_tb.format_exc()}")
-
-                with gr.Tab(t("tabs.settings"), id=_TAB_IDS[3]):
-                    try:
-                        create_settings_tab(
-                            manager=manager,
-                            ckpt=ckpt,
-                            model_kind=model_kind,
-                            attn_impl=attn_impl,
-                        )
-                    except Exception:
-                        _tb.print_exc()
-                        gr.Markdown(f"**Error:** {_tb.format_exc()}")
-
-            # Track tab selection so it survives the next re-render
-            def _on_tab_select(evt: gr.SelectData):
-                if 0 <= evt.index < len(_TAB_IDS):
-                    _tab_state["selected"] = _TAB_IDS[evt.index]
-
-            tabs.select(fn=_on_tab_select)
-
-            # Disclaimer
-            gr.Markdown(t("disclaimer.text"), elem_classes=["disclaimer"])
+        ui_lang_selector.change(
+            fn=_on_lang_change,
+            inputs=[ui_lang_selector],
+            outputs=[],
+            js="(v) => { setTimeout(() => location.reload(), 300); return v; }",
+        )
 
     return demo

@@ -226,6 +226,7 @@ def create_voice_clone_tab(
                         label=t("voice_clone.reference_text.label"),
                         lines=2,
                         placeholder=t("voice_clone.reference_text.placeholder"),
+                        interactive=True,
                     )
                     with gr.Row():
                         whisper_model = gr.Dropdown(
@@ -243,6 +244,7 @@ def create_voice_clone_tab(
                     xvec_only = gr.Checkbox(
                         label=t("voice_clone.xvector_only.label"),
                         value=False,
+                        interactive=True,
                     )
 
                 with gr.Column(scale=2):
@@ -250,6 +252,7 @@ def create_voice_clone_tab(
                         label=t("voice_clone.text_input.label"),
                         lines=5,
                         placeholder=t("voice_clone.text_input.placeholder"),
+                        interactive=True,
                     )
                     with gr.Row():
                         lang_in = gr.Dropdown(
@@ -264,6 +267,7 @@ def create_voice_clone_tab(
                             maximum=2.0,
                             value=1.0,
                             step=0.1,
+                            interactive=True,
                         )
                     btn = gr.Button(
                         t("voice_clone.generate_button"),
@@ -377,6 +381,7 @@ def create_voice_clone_tab(
                         label=t("voice_clone.prompt_save_load.reference_text_label"),
                         lines=2,
                         placeholder=t("voice_clone.reference_text.placeholder"),
+                        interactive=True,
                     )
                     with gr.Row():
                         whisper_model_s = gr.Dropdown(
@@ -394,6 +399,7 @@ def create_voice_clone_tab(
                     xvec_only_s = gr.Checkbox(
                         label=t("voice_clone.xvector_only.label"),
                         value=False,
+                        interactive=True,
                     )
                     save_btn = gr.Button(
                         t("voice_clone.prompt_save_load.save_button"),
@@ -417,6 +423,7 @@ def create_voice_clone_tab(
                         label=t("voice_clone.text_input.label"),
                         lines=4,
                         placeholder=t("voice_clone.text_input.placeholder"),
+                        interactive=True,
                     )
                     with gr.Row():
                         lang_in2 = gr.Dropdown(
@@ -431,6 +438,7 @@ def create_voice_clone_tab(
                             maximum=2.0,
                             value=1.0,
                             step=0.1,
+                            interactive=True,
                         )
                     gen_btn2 = gr.Button(
                         t("voice_clone.generate_button"),

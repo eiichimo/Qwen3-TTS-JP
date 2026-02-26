@@ -49,6 +49,7 @@ def create_voice_design_tab(
                 max_lines=10,
                 placeholder=t("voice_design.text_input.placeholder"),
                 value="It's in the top drawer... wait, it's empty? No way, that's impossible! I'm sure I put it there!",
+                interactive=True,
             )
             design_in = gr.Textbox(
                 label=t("voice_design.voice_description.label"),
@@ -56,6 +57,7 @@ def create_voice_design_tab(
                 placeholder=t("voice_design.voice_description.placeholder"),
                 info=t("voice_design.voice_description.info"),
                 value="Speak in an incredulous tone, but with a hint of panic beginning to creep into your voice.",
+                interactive=True,
             )
             with gr.Row():
                 lang_in = gr.Dropdown(
@@ -70,6 +72,7 @@ def create_voice_design_tab(
                     maximum=2.0,
                     value=1.0,
                     step=0.1,
+                    interactive=True,
                 )
             btn = gr.Button(
                 t("voice_design.generate_button"),
