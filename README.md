@@ -75,30 +75,56 @@ git clone https://github.com/hiroki-abe-58/Qwen3-TTS-JP.git
 cd Qwen3-TTS-JP
 ```
 
-### 2. Create and Activate Virtual Environment
+### 2. Create and Activate Virtual Environment (PowerShell)
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip setuptools wheel
 ```
 
-### 3. Install Dependencies
+If activation is blocked by ExecutionPolicy, run:
 
 ```bash
-pip install -e .
-pip install faster-whisper
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
 ```
 
-### 4. Install PyTorch (CUDA Version)
+### 3. Install PyTorch (CUDA Version) First
 
-Install according to your CUDA version.
+Install according to your GPU/CUDA requirements.
 
 ```bash
-# For CUDA 12.x
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# RTX 30/40 series (CUDA 12.x)
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
-# For RTX 50 series (sm_120), nightly build is required
-pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+# RTX 50 series (Blackwell / sm_120): nightly build required
+python -m pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+```
+
+### 4. Install Project Dependencies
+
+```bash
+python -m pip install -e .
+python -m pip install faster-whisper
+```
+
+### 5. Poetry (Optional)
+
+Poetry can be used, but this project still needs manual PyTorch wheel selection
+for Windows GPU environments. For most users, `venv + pip` is simpler.
+
+```bash
+poetry env use 3.11
+poetry run python -m pip install -U pip setuptools wheel
+
+# Install GPU-matched PyTorch wheels first
+poetry run python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# or (RTX 50 series)
+# poetry run python -m pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+
+poetry install
+poetry run python -m pip install faster-whisper
 ```
 
 ## Usage
