@@ -75,30 +75,56 @@ git clone https://github.com/hiroki-abe-58/Qwen3-TTS-JP.git
 cd Qwen3-TTS-JP
 ```
 
-### 2. 仮想環境の作成と有効化
+### 2. 仮想環境の作成と有効化（PowerShell）
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip setuptools wheel
 ```
 
-### 3. 依存パッケージのインストール
+ExecutionPolicyで有効化がブロックされる場合は、以下を実行してください：
 
 ```bash
-pip install -e .
-pip install faster-whisper
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
 ```
 
-### 4. PyTorch（CUDA対応版）のインストール
+### 3. 先にPyTorch（CUDA対応版）をインストール
 
-お使いのCUDAバージョンに合わせてインストールしてください。
+GPU/CUDAに合わせてインストールしてください。
 
 ```bash
-# CUDA 12.x の場合
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# RTX 30/40シリーズ（CUDA 12.x）
+python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
-# RTX 50シリーズ（sm_120）の場合はnightlyビルドが必要
-pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+# RTX 50シリーズ（Blackwell / sm_120）はnightlyビルドが必要
+python -m pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+```
+
+### 4. プロジェクト依存のインストール
+
+```bash
+python -m pip install -e .
+python -m pip install faster-whisper
+```
+
+### 5. Poetry（任意）
+
+Poetryも利用できますが、WindowsのGPU環境ではPyTorchホイールの選択を
+手動で行う必要があります。多くの環境では `venv + pip` の方が簡単です。
+
+```bash
+poetry env use 3.11
+poetry run python -m pip install -U pip setuptools wheel
+
+# GPUに合ったPyTorchを先に入れる
+poetry run python -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# または（RTX 50シリーズ）
+# poetry run python -m pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+
+poetry install
+poetry run python -m pip install faster-whisper
 ```
 
 ## 使用方法
