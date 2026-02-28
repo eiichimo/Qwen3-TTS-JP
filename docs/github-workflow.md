@@ -12,14 +12,18 @@
 - 現在は `main` 中心で運用している
 - `develop` / `release/*` は必要時に導入する
 - `develop` 未導入期間の feature PR は `feature/* -> main` で運用し、Issue 紐付けは `Refs #xx` を使う
+- 当面は個人用 fork 運用とし、fork 元への PR 作成は前提にしない
+- PR の作成先は自分の `origin` リポジトリ内に限定する
 
 ## 1. 運用の前提
 
 - `main` への直接コミットは禁止（PR 経由のみ）。
+- `origin/main` への反映も必ず PR 経由とし、direct push は行わない。
 - 作業ブランチは現在 `main` から作成する（`develop` 導入後は `develop`）。
 - Issue と PR を必ず紐付ける。
 - 通常の feature PR では `Refs #<issue番号>` を使い、`Fixes/Closes` は使わない。
 - Issue は「実装完了」と「リリース完了」を分けて管理する。
+- `upstream` remote は任意の同期用途に限定し、変更の push は `origin` に対して行う。
 
 ## 2. ブランチ戦略
 
@@ -109,4 +113,5 @@
   - `Squash merge` を有効化
   - `Merge commit` を有効化（リリース PR 用）
 - `Automatically delete head branches` を有効化
+- fork 先で Discussions を無効化している場合、関連 workflow から `discussion` / `discussion_comment` event を外す
 - 補足: 自動削除の対象は `feature/*` と `release/*`。`main`（必要に応じて `develop`）は保護ルールで残す

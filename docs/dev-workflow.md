@@ -5,6 +5,12 @@
 - `develop` / `release/*` 運用は将来的に導入可能
 - 本ドキュメントは「現行(main中心)」と「標準(develop+release)」の両方を扱う
 
+## Personal Fork Policy (Current)
+- 当面は個人用 fork として運用し、fork 元への PR 作成は前提にしない
+- PR を作成する場合の base は自分の `origin/main` とする
+- `upstream` remote は同期専用（任意）とし、push 先は `origin` のみとする
+- `origin/main` への変更反映は必ず `PR -> merge` で行い、direct push はしない
+
 ## Quick Start
 ```bash
 git switch main
@@ -17,6 +23,7 @@ git switch -c fix/my-task
 - `main` 更新は `git pull --ff-only origin main`
 - `develop` 運用時は `git pull --ff-only origin develop`
 - 作業ブランチ更新は `git fetch origin && git rebase origin/<base-branch>`
+- `upstream` を追加した場合も、通常運用の push は `origin` に限定する
 
 ## PR Body
 - `Summary`
