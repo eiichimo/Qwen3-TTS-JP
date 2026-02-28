@@ -1,3 +1,5 @@
+> Note: 当面は個人用 fork 運用のため、このテンプレートは `origin` リポジトリ内 PR を対象とします（fork 元への PR は対象外）。
+
 ## PR Type
 - [ ] Feature PR (`feature/* -> develop` または `feature/* -> main` (暫定))
 - [ ] Release PR (`develop -> main`)
