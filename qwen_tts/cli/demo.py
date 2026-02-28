@@ -30,6 +30,8 @@ to the qwen_tts.ui package.
 """
 
 import argparse
+import asyncio
+import sys
 from typing import Any, Dict
 
 import torch
@@ -180,6 +182,13 @@ def _collect_gen_kwargs(args: argparse.Namespace) -> Dict[str, Any]:
 
 
 def main(argv=None) -> int:
+    if sys.platform.startswith("win"):
+        # Avoid noisy Proactor transport shutdown tracebacks on Windows + Gradio.
+        try:
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        except Exception:
+            pass
+
     parser = build_parser()
     args = parser.parse_args(argv)
 
