@@ -9,16 +9,18 @@ on:
   discussion_comment:
     types: [created, edited]
 
+permissions:
+  contents: read
+
 jobs:
   translate:
     permissions:
       issues: write
       discussions: write
-      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: lizheming/github-translate-action
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: lizheming/github-translate-action@c55aac477e98562d4faed9f77c54ab8306ae6ebf # 1.1.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

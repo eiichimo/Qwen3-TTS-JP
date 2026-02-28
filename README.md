@@ -42,6 +42,13 @@ This repository adopts operational rules from `engineering-playbook`.
 - Adoption record: [docs/playbook.md](docs/playbook.md)
 - Development workflow: [docs/dev-workflow.md](docs/dev-workflow.md)
 - GitHub workflow/Issue-PR linking rules: [docs/github-workflow.md](docs/github-workflow.md)
+- Security notes and assumptions: [docs/security.md](docs/security.md)
+
+## Security Assumption
+
+- This project is intended for local/non-public use.
+- Internet-facing service deployment is out of scope.
+- The demo server bind default (`0.0.0.0`) is kept for local/LAN convenience; use `--ip 127.0.0.1` for single-machine use.
 
 ## Features
 
