@@ -203,6 +203,6 @@ def create_settings_tab(
     def refresh_system():
         return _get_system_info_md()
 
-    vram_refresh_btn.click(refresh_vram, outputs=[vram_display])
-    cache_clear_btn.click(clear_cuda_cache, outputs=[vram_display])
-    sys_refresh_btn.click(refresh_system, outputs=[sys_info_display])
+    vram_refresh_btn.click(refresh_vram, outputs=[vram_display], api_visibility="private")
+    cache_clear_btn.click(clear_cuda_cache, outputs=[vram_display], api_visibility="private")
+    sys_refresh_btn.click(refresh_system, outputs=[sys_info_display], api_visibility="private")

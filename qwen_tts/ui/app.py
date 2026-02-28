@@ -186,6 +186,7 @@ def build_demo(
             inputs=[ui_lang_selector],
             outputs=[],
             js="(v) => { setTimeout(() => location.reload(), 300); return v; }",
+            api_visibility="private",
         )
 
     return demo
