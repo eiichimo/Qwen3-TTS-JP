@@ -2,7 +2,7 @@
 
 ## PR Type
 - [ ] Feature PR (`feature/* -> develop`)
-- [ ] Release PR (`develop -> main`)
+- [ ] Release PR (`release/* -> main`)
 
 ---
 
@@ -31,7 +31,7 @@
 
 ---
 
-## Release PR (`develop -> main`)
+## Release PR (`release/* -> main`)
 
 ### Release summary
 -
