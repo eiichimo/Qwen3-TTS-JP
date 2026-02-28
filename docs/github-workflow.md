@@ -109,4 +109,5 @@
   - `Squash merge` を有効化
   - `Merge commit` を有効化（リリース PR 用）
 - `Automatically delete head branches` を有効化
+- fork 先で Discussions を無効化している場合、関連 workflow から `discussion` / `discussion_comment` event を外す
 - 補足: 自動削除の対象は `feature/*` と `release/*`。`main`（必要に応じて `develop`）は保護ルールで残す
