@@ -35,6 +35,14 @@ The original Qwen3-TTS was developed primarily for Linux environments, and Flash
 | Windows | **This repository** | Windows-native + multilingual Web UI |
 | macOS (Apple Silicon) | [Qwen3-TTS-Mac-GeneLab](https://github.com/hiroki-abe-58/Qwen3-TTS-Mac-GeneLab) | Fully optimized for Apple Silicon Mac (MLX + PyTorch dual engine, 10-language Web UI) |
 
+## Engineering Workflow
+
+This repository adopts operational rules from `engineering-playbook`.
+
+- Adoption record: [docs/playbook.md](docs/playbook.md)
+- Development workflow: [docs/dev-workflow.md](docs/dev-workflow.md)
+- GitHub workflow/Issue-PR linking rules: [docs/github-workflow.md](docs/github-workflow.md)
+
 ## Features
 
 ### Windows Native Support
