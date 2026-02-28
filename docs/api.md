@@ -150,3 +150,4 @@ print(result)
 - API names listed above are intentionally fixed for integration.
 - Internal UI-only events are marked private and are excluded from this spec.
 - If endpoint names or required parameters change, this document should be updated in the same change set.
+- CI enforces required `api_name` declarations and `docs/api.md` endpoint coverage.
