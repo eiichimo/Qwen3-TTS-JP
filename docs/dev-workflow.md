@@ -9,6 +9,7 @@
 - 当面は個人用 fork として運用し、fork 元への PR 作成は前提にしない
 - PR を作成する場合の base は自分の `origin/main` とする
 - `upstream` remote は同期専用（任意）とし、push 先は `origin` のみとする
+- `origin/main` への変更反映は必ず `PR -> merge` で行い、direct push はしない
 
 ## Quick Start
 ```bash

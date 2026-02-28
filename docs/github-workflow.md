@@ -18,6 +18,7 @@
 ## 1. 運用の前提
 
 - `main` への直接コミットは禁止（PR 経由のみ）。
+- `origin/main` への反映も必ず PR 経由とし、direct push は行わない。
 - 作業ブランチは現在 `main` から作成する（`develop` 導入後は `develop`）。
 - Issue と PR を必ず紐付ける。
 - 通常の feature PR では `Refs #<issue番号>` を使い、`Fixes/Closes` は使わない。
