@@ -13,11 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sox
 import copy
 import torch
 import operator
-import onnxruntime
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -118,6 +116,20 @@ class MelSpectrogramFeatures(nn.Module):
 class XVectorExtractor(nn.Module):
     def __init__(self, audio_codec_with_xvector):
         super().__init__()
+        try:
+            import onnxruntime  # pylint: disable=import-outside-toplevel
+        except Exception as exc:
+            raise RuntimeError(
+                "onnxruntime is required for 25Hz voice encoder features."
+            ) from exc
+
+        try:
+            import sox  # pylint: disable=import-outside-toplevel
+        except Exception as exc:
+            raise RuntimeError(
+                "python-sox and SoX are required for 25Hz voice encoder features."
+            ) from exc
+
         option = onnxruntime.SessionOptions()
         option.graph_optimization_level = onnxruntime.GraphOptimizationLevel.ORT_ENABLE_ALL
         option.intra_op_num_threads = 1
