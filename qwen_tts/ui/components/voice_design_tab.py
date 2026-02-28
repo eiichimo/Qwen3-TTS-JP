@@ -106,7 +106,7 @@ def create_voice_design_tab(
     # Wire preset buttons to fill design_in
     for b, key in preset_btns_row1 + preset_btns_row2:
         desc = t(f"voice_design.presets.{key}.description")
-        b.click(fn=lambda d=desc: d, outputs=[design_in])
+        b.click(fn=lambda d=desc: d, outputs=[design_in], api_visibility="private")
 
     def run_voice_design(text: str, lang_disp: str, design: str, speed: float):
         try:
@@ -141,4 +141,6 @@ def create_voice_design_tab(
         run_voice_design,
         inputs=[text_in, lang_in, design_in, speed_in],
         outputs=[audio_out, status_out],
+        api_name="voice_design_generate",
+        api_description="Generate speech from text using free-form voice description.",
     )

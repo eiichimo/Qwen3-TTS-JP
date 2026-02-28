@@ -174,4 +174,6 @@ def create_custom_voice_tab(
         run_custom_voice,
         inputs=[text_in, spk_in, lang_in, emotion_in, speed_in, instruct_in],
         outputs=[audio_out, status_out],
+        api_name="custom_voice_generate",
+        api_description="Generate speech from text using a preset/custom voice speaker.",
     )

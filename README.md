@@ -42,6 +42,7 @@ This repository adopts operational rules from `engineering-playbook`.
 - Adoption record: [docs/playbook.md](docs/playbook.md)
 - Development workflow: [docs/dev-workflow.md](docs/dev-workflow.md)
 - GitHub workflow/Issue-PR linking rules: [docs/github-workflow.md](docs/github-workflow.md)
+- Static API specification: [docs/api.md](docs/api.md)
 - Security notes and assumptions: [docs/security.md](docs/security.md)
 
 ## Security Assumption

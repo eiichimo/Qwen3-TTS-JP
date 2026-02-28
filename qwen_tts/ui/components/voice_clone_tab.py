@@ -311,6 +311,8 @@ def create_voice_clone_tab(
                 transcribe_reference,
                 inputs=[ref_audio, whisper_model],
                 outputs=[ref_text, status_out],
+                api_name="voice_clone_transcribe",
+                api_description="Transcribe reference audio with Whisper.",
             )
 
             # Event: Generate
@@ -363,6 +365,8 @@ def create_voice_clone_tab(
                 run_voice_clone,
                 inputs=[ref_audio, ref_text, xvec_only, text_in, lang_in, speed_in],
                 outputs=[audio_out, status_out],
+                api_name="voice_clone_generate",
+                api_description="Generate speech using reference audio/text voice cloning.",
             )
 
         # ---- Sub-tab 2: Save / Load Prompt ----
@@ -475,6 +479,8 @@ def create_voice_clone_tab(
                 transcribe_reference_s,
                 inputs=[ref_audio_s, whisper_model_s],
                 outputs=[ref_text_s, status_out2],
+                api_name="voice_clone_prompt_transcribe",
+                api_description="Transcribe reference audio before prompt export.",
             )
 
             # Event: Save prompt
@@ -516,6 +522,8 @@ def create_voice_clone_tab(
                 save_prompt,
                 inputs=[ref_audio_s, ref_text_s, xvec_only_s],
                 outputs=[prompt_file_out, status_out2],
+                api_name="voice_clone_prompt_save",
+                api_description="Create and export a voice-clone prompt file.",
             )
 
             # Event: Load prompt and generate
@@ -626,4 +634,6 @@ def create_voice_clone_tab(
                 load_prompt_and_gen,
                 inputs=[prompt_file_in, text_in2, lang_in2, speed_in2],
                 outputs=[audio_out2, status_out2],
+                api_name="voice_clone_prompt_generate",
+                api_description="Generate speech from an uploaded voice-clone prompt file.",
             )
