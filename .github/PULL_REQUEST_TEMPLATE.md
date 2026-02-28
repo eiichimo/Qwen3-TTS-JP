@@ -1,12 +1,12 @@
 > Note: 当面は個人用 fork 運用のため、このテンプレートは `origin` リポジトリ内 PR を対象とします（fork 元への PR は対象外）。
 
 ## PR Type
-- [ ] Feature PR (`feature/* -> develop` または `feature/* -> main` (暫定))
+- [ ] Feature PR (`feature/* -> develop`)
 - [ ] Release PR (`develop -> main`)
 
 ---
 
-## Feature PR (`feature/* -> develop` / `feature/* -> main`)
+## Feature PR (`feature/* -> develop`)
 
 ### Overview
 -
@@ -24,7 +24,7 @@
 - Refs #
 
 ### Checklist (Feature)
-- [ ] base ブランチが `develop` または `main`（暫定運用）
+- [ ] base ブランチが `develop`
 - [ ] `Related Issues` に `Refs #<issue>` を記載した
 - [ ] この PR では `Fixes` / `Closes` を使っていない
 - [ ] テスト実行有無を `Testing` に記載した
