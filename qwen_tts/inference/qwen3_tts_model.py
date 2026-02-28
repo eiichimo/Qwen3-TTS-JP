@@ -14,7 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import base64
+import ipaddress
 import io
+import os
+import socket
 import urllib.request
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -199,6 +202,74 @@ class Qwen3TTSModel:
         except Exception:
             return False
 
+    def _is_private_host(self, host: str) -> bool:
+        try:
+            addr_info = socket.getaddrinfo(host, None, proto=socket.IPPROTO_TCP)
+        except OSError:
+            # If the host cannot be resolved, treat it as unsafe.
+            return True
+
+        for info in addr_info:
+            ip = info[4][0]
+            try:
+                parsed = ipaddress.ip_address(ip)
+            except ValueError:
+                return True
+            if (
+                parsed.is_private
+                or parsed.is_loopback
+                or parsed.is_link_local
+                or parsed.is_multicast
+                or parsed.is_reserved
+                or parsed.is_unspecified
+            ):
+                return True
+        return False
+
+    def _read_remote_audio_bytes(
+        self,
+        url: str,
+        timeout_sec: int = 10,
+        max_bytes: int = 25 * 1024 * 1024,
+    ) -> bytes:
+        parsed = urlparse(url)
+        host = parsed.hostname
+        if not host:
+            raise ValueError("Invalid URL: hostname is missing.")
+
+        allow_private = str(os.environ.get("QWEN_TTS_ALLOW_PRIVATE_URLS", "")).lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+        if not allow_private and self._is_private_host(host):
+            raise ValueError(
+                "Refusing to fetch audio from private/loopback host. "
+                "Set QWEN_TTS_ALLOW_PRIVATE_URLS=1 to override."
+            )
+
+        req = urllib.request.Request(url, headers={"User-Agent": "qwen-tts/0.0.4"})
+        with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
+            content_length = resp.headers.get("Content-Length")
+            if content_length is not None and int(content_length) > max_bytes:
+                raise ValueError(
+                    f"Remote audio too large ({content_length} bytes > {max_bytes} bytes)."
+                )
+
+            chunks: List[bytes] = []
+            total = 0
+            while True:
+                chunk = resp.read(1024 * 1024)
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > max_bytes:
+                    raise ValueError(
+                        f"Remote audio exceeded maximum allowed size ({max_bytes} bytes)."
+                    )
+                chunks.append(chunk)
+        return b"".join(chunks)
+
     def _decode_base64_to_wav_bytes(self, b64: str) -> bytes:
         if "," in b64 and b64.strip().startswith("data:"):
             b64 = b64.split(",", 1)[1]
@@ -206,8 +277,7 @@ class Qwen3TTSModel:
 
     def _load_audio_to_np(self, x: str) -> Tuple[np.ndarray, int]:
         if self._is_url(x):
-            with urllib.request.urlopen(x) as resp:
-                audio_bytes = resp.read()
+            audio_bytes = self._read_remote_audio_bytes(x)
             with io.BytesIO(audio_bytes) as f:
                 audio, sr = sf.read(f, dtype="float32", always_2d=False)
         elif self._is_probably_base64(x):

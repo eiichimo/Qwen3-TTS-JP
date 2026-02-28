@@ -2,15 +2,18 @@ name: Close and lock inactive threads
 on:
   schedule:
     - cron: "0 8 * * *"
+
+permissions:
+  contents: read
+
 jobs:
   manage-inactive:
     runs-on: ubuntu-latest
     permissions:
-      actions: write
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@5bef64f19d7facfb25b37b414482c7164d639639 # v9
         with:
           days-before-issue-stale: 45
           days-before-issue-close: 30
@@ -25,7 +28,7 @@ jobs:
           days-before-pr-close: -1
           operations-per-run: 128
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: dessant/lock-threads@v5
+      - uses: dessant/lock-threads@1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771 # v5
         with:
           issue-inactive-days: 60
           issue-comment: >

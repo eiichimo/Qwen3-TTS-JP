@@ -20,6 +20,7 @@ from ..model_manager import ModelManager
 # ============================================================================
 _whisper_model = None
 _whisper_model_name = None
+_MAX_PROMPT_FILE_BYTES = 10 * 1024 * 1024
 
 WHISPER_MODELS = [
     "tiny",       # 39M params
@@ -538,6 +539,12 @@ def create_voice_clone_tab(
                         or getattr(file_obj, "path", None)
                         or str(file_obj)
                     )
+                    if os.path.getsize(path) > _MAX_PROMPT_FILE_BYTES:
+                        return (
+                            None,
+                            f"{t('messages.error')}: "
+                            f"prompt file is too large (>{_MAX_PROMPT_FILE_BYTES} bytes)",
+                        )
                     payload = torch.load(
                         path, map_location="cpu", weights_only=True
                     )
